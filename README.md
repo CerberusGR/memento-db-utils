@@ -32,7 +32,7 @@ Formats any Memento date field into a readable string. It handles Greek grammar 
 | YY | 2-digit year | 26 |
 
 #### Usage Examples - JavaScript
-`var d = field("MyDate");
+```var d = field("MyDate");
 
 // Greek Default: "02 Απριλίου 2026"
 formatDate(d);
@@ -41,7 +41,8 @@ formatDate(d);
 formatDate(d, "ddd, DD/MM/YY");
 
 // English: "Wednesday, 02 April 2026"
-formatDate(d, "dddd, DD MMMM YYYY", "en");`
+formatDate(d, "dddd, DD MMMM YYYY", "en");
+```
 
 
 # 💶 Currency Formatting: formatEuro(amount, includeSymbol)
