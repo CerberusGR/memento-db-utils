@@ -76,5 +76,3 @@ function formatDate(dateInput, format, locale) {
         .replace(/YYYY/g, YYYY)
         .replace(/YY/g, YY);
 }
-
-exports.formatDate = formatDate;
