@@ -10,16 +10,16 @@ A collection of lightweight JavaScript utilities specifically designed for **Mem
 4. Link your local folder (synced with this GitHub repo) or provide the repository URL.
 
 
-### 📅 Date Formatting: formatDate(date, format, locale)
+## 📅 Date Formatting: formatDate(date, format, locale)
 Formats any Memento date field into a readable string. It handles Greek grammar rules (Nominative vs. Genitive case) automatically.
 
-# Arguments
+### Arguments
 Parameter    Type           Default           Description
 dateInput    Date/Number    Required          The date value from a Memento field.
 format       String         "DD MMMM YYYY"    The desired output pattern.
 locale       String         "el"              Language code: "el" (Greek) or "en" (English).
 
-# Supported Tokens
+### Supported Tokens
 dddd:  Full day name (e.g., Wednesday / Τετάρτη)
 ddd:   Short day name (e.g., Wed / Τετ)
 DD:    Day of month with leading zero (01-31)
@@ -28,7 +28,7 @@ MM:    Month number (01-12)
 YYYY:  4-digit year (2026)
 YY:    2-digit year (26)
 
-# Usage Examples - JavaScript
+#### Usage Examples - JavaScript
 var d = field("MyDate");
 
 // Greek Default: "02 Απριλίου 2026"
