@@ -48,21 +48,24 @@ formatDate(d, "ddd, DD/MM/YY");
 formatDate(d, "dddd, DD MMMM YYYY", "en");
 ```
 
+&nbsp;
+## 💶 Currency Formatting
 
-# 💶 Currency Formatting: formatEuro(amount, includeSymbol)
+## formatEuro(amount, includeSymbol)
 Formats numeric values into the standard European/Greek currency format (1.250,50 €).
 
-# Arguments
+### Arguments
 Parameter        Type             Default     Description
 amount           Number/String    Required    The numeric value to format.
 includeSymbol    Boolean          true        Append the ' €' symbol to the end.
 
-# Features
+### Features
 Forces 2 decimal places.
 Replaces decimal dot (.) with comma (,).
 Adds a dot (.) as a thousands separator.
 
-# Usage Examples - JavaScript
+### Usage Examples
+```JavaScript
 var price = field("Amount");
 
 // Standard: "1.500,00 €"
@@ -70,12 +73,9 @@ formatEuro(price);
 
 // Number only: "1.500,00"
 formatEuro(price, false);
+```
 
+&nbsp;
 # 🛠 Maintenance
 To add more languages or formatting rules, simply update the languages object in date-utils.js. All changes pushed to GitHub will be available to your Memento libraries upon sync.
 
-
-### Μικρό tip για το GitHub:
-Αν το αρχείο των ημερομηνιών το ονομάσεις `date-utils.js` και των χρημάτων `number-utils.js`, ο κώδικας στο README θα δουλεύει ακριβώς όπως τον έγραψα.
-
-Είσαι έτοιμος να το "ανεβάσεις"! Θέλεις βοήθεια με κάτι άλλο στο Repository;
