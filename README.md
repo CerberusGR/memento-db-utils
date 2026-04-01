@@ -19,9 +19,9 @@ Formats any Memento date field into a readable string. It handles Greek grammar 
 #### Arguments
 | Parameter | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| date | Date/Number | Required | The date value from a Memento field. |
-| format | String | "DD MMMM YYYY"  | The desired output pattern. |
-| locale | String | "el" | Language code: "el" (Greek) or "en" (English). |
+| **`date`**  | Date/Number | Required | The date value from a Memento field. |
+| **`format`**  | String | "DD MMMM YYYY"  | The desired output pattern. |
+| **`locale`**  | String | "el" | Language code: "el" (Greek) or "en" (English). |
 
 #### Supported Tokens
 | Token | Description | Example |
@@ -52,9 +52,9 @@ formatDate(d, "dddd, DD MMMM YYYY", "en");
 ## 💶 Number and Currency Formatting (number-utils.js)
 
 ### formatEuro(amount, includeSymbol)
-Formats numeric values into the standard European/Greek currency format (1.250,50 €).
+Formats numeric values into the standard European/Greek currency format (e.g. 1.250,50 €).
 
-
+#### Arguments
 | Parameter | Type | Default | Description |
 | :--- | :---: | :---: | :--- |
 | **`amount`** | Number/String | *Required* | The numeric value you want to format. |
