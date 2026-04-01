@@ -19,6 +19,12 @@ dateInput    Date/Number    Required          The date value from a Memento fiel
 format       String         "DD MMMM YYYY"    The desired output pattern.
 locale       String         "el"              Language code: "el" (Greek) or "en" (English).
 
+Parameter,Type,Default,Description
+dateInput,Date/Number,Required,The date value from a Memento field.
+format,String,"""DD MMMM YYYY""",The desired output pattern.
+locale,String,"""el""","Language code: ""el"" (Greek) or ""en"" (English)."
+
+
 ### Supported Tokens
 dddd:  Full day name (e.g., Wednesday / Τετάρτη)
 ddd:   Short day name (e.g., Wed / Τετ)
