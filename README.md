@@ -15,6 +15,7 @@ Formats any Memento date field into a readable string. It handles Greek grammar 
 
 ### Arguments
 | Parameter | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
 | dateInput | Date/Number | Required | The date value from a Memento field. |
 | format | String | "DD MMMM YYYY"  | The desired output pattern. |
 | locale | String | "el" | Language code: "el" (Greek) or "en" (English). |
