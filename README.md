@@ -11,7 +11,7 @@ A collection of lightweight JavaScript utilities specifically designed for **Mem
 4. Link your local folder (synced with this GitHub repo) or provide the repository URL.
 
 &nbsp;
-## 📅 Date Formatting
+## 📅 Date Formatting (date-utils.js)
 
 ### formatDate(date, format, locale)
 Formats any Memento date field into a readable string. It handles Greek grammar rules (Nominative vs. Genitive case) automatically.
@@ -49,7 +49,7 @@ formatDate(d, "dddd, DD MMMM YYYY", "en");
 ```
 
 &nbsp;
-## 💶 Currency Formatting
+## 💶 Number and Currency Formatting (number-utils.js)
 
 ### formatEuro(amount, includeSymbol)
 Formats numeric values into the standard European/Greek currency format (1.250,50 €).
