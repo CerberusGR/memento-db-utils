@@ -21,7 +21,7 @@ function getGreekMonth(dateObj) {
 }
 
 
-function getDaste(dateInput, format) {
+function getDate(dateInput, format) {
     if (!dateInput) return "";
     var d = new Date(dateInput);
 
