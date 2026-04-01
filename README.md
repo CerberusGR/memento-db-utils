@@ -31,8 +31,9 @@ Formats any Memento date field into a readable string. It handles Greek grammar 
 | YYYY | 4-digit year | 2026 |
 | YY | 2-digit year | 26 |
 
-#### Usage Examples - JavaScript
-```var d = field("MyDate");
+#### Usage Examples
+```Javascript
+var d = field("MyDate");
 
 // Greek Default: "02 Απριλίου 2026"
 formatDate(d);
