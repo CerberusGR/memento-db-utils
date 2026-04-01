@@ -21,7 +21,7 @@ function getGreekMonth(dateObj) {
 }
 
 
-function formatDate(dateInput, format) {
+function getDate(dateInput, format) {
     if (!dateInput) return "";
     var d = new Date(dateInput);
     if (isNaN(d.getTime())) return "Άκυρη Ημερομηνία";
