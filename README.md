@@ -72,6 +72,14 @@ Calculates the absolute number of days between two dates.
 diffInDays(field("StartDate"), field("EndDate"));
 ```
 
+### 4. `getAge(birthDate)`
+Calculates current age in years.
+```javascript
+var userAge = getAge(field("Birthday"));
+```
+
+### 5. `getGreekDay(date) & getGreekMonth(date)`
+Returns "Τετάρτη" or "Απρίλιος".
 
 &nbsp;
 ## 💶 Number and Currency Formatting (number-utils.js)
