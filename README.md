@@ -35,7 +35,7 @@ Formats any Memento date field into a readable string. It handles Greek grammar 
 | **YY** | 2-digit year | 26 |
 
 #### Usage Examples
-```Javascript
+```javascript
 var d = field("MyDate");
 
 // Greek Default: "02 Απριλίου 2026"
@@ -58,7 +58,7 @@ Adds or subtracts days from a specific date.
 | **`days`** | `Number` | Number of days to add (use negative for subtraction). |
 
 #### Usage Example
-```Javascript
+```javascript
 // Get the date for 7 days from now
 var nextWeek = addDays(new Date(), 7);
 ```
@@ -67,7 +67,7 @@ var nextWeek = addDays(new Date(), 7);
 Calculates the absolute number of days between two dates.
 
 #### Usage Example:
-```Javascript
+```javascript
 // Result: 5 (if dates are 5 days apart)
 diffInDays(field("StartDate"), field("EndDate"));
 ```
@@ -92,7 +92,7 @@ Formats numeric values into the standard European/Greek currency format (e.g. 1.
 | `1250.5` | `false` | **1.250,50** |
 
 #### Usage Examples
-```JavaScript
+```javaScript
 var price = field("Amount");
 
 // Standard: "1.500,00 €"
