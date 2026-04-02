@@ -13,15 +13,15 @@ A collection of lightweight JavaScript utilities specifically designed for **Mem
 &nbsp;
 ## 📅 Date Formatting (date-utils.js)
 
-### formatDate(date, format, locale)
+### 1. `formatDate(date, format, locale)`
 Formats any Memento date field into a readable string. It handles Greek grammar rules (Nominative vs. Genitive case) automatically.
 
 #### Arguments
 | Parameter | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| **`date`**  | Date/Number | Required | The date value from a Memento field. |
-| **`format`**  | String | "DD MMMM YYYY"  | The desired output pattern. |
-| **`locale`**  | String | "el" | Language code: "el" (Greek) or "en" (English). |
+| **`date`**  | `Date/Number` | Required | The date value from a Memento field. |
+| **`format`**  | `String` | "DD MMMM YYYY"  | The desired output pattern. |
+| **`locale`**  | `String` | "el" | Language code: "el" (Greek) or "en" (English). |
 
 #### Supported Tokens
 | Token | Description | Example |
@@ -47,6 +47,32 @@ formatDate(d, "ddd, DD/MM/YY");
 // English: "Wednesday, 02 April 2026"
 formatDate(d, "dddd, DD MMMM YYYY", "en");
 ```
+
+### 2. `addDays(dateInput, days)`
+Adds or subtracts days from a specific date.
+
+#### Arguments
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+dateInput
+
+Date
+
+The starting date.
+
+days
+
+Number
+
+Number of days to add (use negative for subtraction).
+
+Example:
+
+// Get the date for 7 days from now
+var nextWeek = addDays(new Date(), 7);
+
+
+
 
 &nbsp;
 ## 💶 Number and Currency Formatting (number-utils.js)
