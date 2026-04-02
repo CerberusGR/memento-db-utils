@@ -1,13 +1,3 @@
-function getGreekDay(dateInput) {
-    return formatDate(dateInput, "dddd");
-}
-
-
-function getGreekMonth(dateInput) {
-    return formatDate(dateInput, "MMMM");
-}
-
-
 /**
  * Formats a date string or timestamp into a readable string.
  * @param {any} dateInput - The date value from Memento (timestamp or string).
@@ -16,18 +6,13 @@ function getGreekMonth(dateInput) {
  * @returns {string} - The formatted date string.
  */
 function formatDate(dateInput, format, locale) {
-    // Set default values if parameters are missing
     format = format || "DD MMMM YYYY"; 
     locale = locale || "el";
 
-    // Handle empty input
     if (!dateInput) return "";
-
     var d = new Date(dateInput);
-    // Check if the date object is valid
     if (isNaN(d.getTime())) return "Invalid Date";
 
-    // Dictionary containing language-specific strings
     var languages = {
         "el": {
             daysFull: ["Κυριακή", "Δευτέρα", "Τρίτη", "Τετάρτη", "Πέμπτη", "Παρασκευή", "Σάββατο"],
@@ -43,10 +28,7 @@ function formatDate(dateInput, format, locale) {
         }
     };
 
-    // Fallback to English if the requested locale is not supported
     var lang = languages[locale] || languages["en"];
-
-    // Extract date components and pad with leading zeros where necessary
     var DD = ("0" + d.getDate()).slice(-2);
     var MM = ("0" + (d.getMonth() + 1)).slice(-2);
     var YYYY = d.getFullYear();
@@ -55,7 +37,6 @@ function formatDate(dateInput, format, locale) {
     var dddd = lang.daysFull[d.getDay()];
     var ddd = lang.daysShort[d.getDay()];
     
-    // Logic for Greek grammar: Use Genitive case (monthsGen) if 'DD' is present in format
     var monthName;
     if (locale === "el" && format.indexOf("DD") > -1) {
         monthName = lang.monthsGen[d.getMonth()];
@@ -63,7 +44,6 @@ function formatDate(dateInput, format, locale) {
         monthName = lang.monthsNom[d.getMonth()];
     }
 
-    // Perform replacements using global regex to match all occurrences
     return format
         .replace(/dddd/g, dddd)
         .replace(/ddd/g, ddd)
@@ -72,4 +52,65 @@ function formatDate(dateInput, format, locale) {
         .replace(/MM/g, MM)
         .replace(/YYYY/g, YYYY)
         .replace(/YY/g, YY);
+}
+
+/**
+ * Adds a specific number of days to a date.
+ * @param {any} dateInput - The starting date.
+ * @param {number} days - Number of days to add (can be negative).
+ * @returns {Date} - The new Date object.
+ */
+function addDays(dateInput, days) {
+    var result = new Date(dateInput);
+    result.setDate(result.getDate() + days);
+    return result;
+}
+
+/**
+ * Calculates the difference in days between two dates.
+ * @param {any} d1 - First date.
+ * @param {any} d2 - Second date.
+ * @returns {number} - Absolute number of days.
+ */
+function diffInDays(d1, d2) {
+    var date1 = new Date(d1);
+    var date2 = new Date(d2);
+    var diffTime = Math.abs(date2 - date1);
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+}
+
+/**
+ * Gets the full name of the day in Greek.
+ * @param {any} dateInput - The date value.
+ * @returns {string} - Full Greek day name (e.g., "Δευτέρα").
+ */
+function getGreekDay(dateInput) {
+    return formatDate(dateInput, "dddd", "el");
+}
+
+/**
+ * Gets the full name of the month in Greek (Nominative case).
+ * @param {any} dateInput - The date value.
+ * @returns {string} - Full Greek month name (e.g., "Απρίλιος").
+ */
+function getGreekMonth(dateInput) {
+    return formatDate(dateInput, "MMMM", "el");
+}
+
+/**
+ * Calculates age in years based on a birth date.
+ * @param {any} birthDate - The date of birth.
+ * @returns {number} - The age in years.
+ */
+function getAge(birthDate) {
+    if (!birthDate) return 0;
+    var today = new Date();
+    var birth = new Date(birthDate);
+    var age = today.getFullYear() - birth.getFullYear();
+    var monthDiff = today.getMonth() - birth.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+        age--;
+    }
+    return age;
 }
