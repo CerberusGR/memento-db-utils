@@ -54,15 +54,23 @@ Adds or subtracts days from a specific date.
 #### Arguments
 | Parameter | Type | Description |
 | :--- | :--- | :--- |
-| dateInput | Date | The starting date. |
-| days | Number | Number of days to add (use negative for subtraction). |
+| **`dateInput`** | `Date` | The starting date. |
+| **`days`** | `Number` | Number of days to add (use negative for subtraction). |
 
 #### Usage Example
 ```Javascript
 // Get the date for 7 days from now
-var nextWeek = addDays(new Date(), 7);```
+var nextWeek = addDays(new Date(), 7);
+```
 
+### 3. `diffInDays(d1, d2)`
+Calculates the absolute number of days between two dates.
 
+#### Usage Example:
+```Javascript
+// Result: 5 (if dates are 5 days apart)
+diffInDays(field("StartDate"), field("EndDate"));
+```
 
 
 &nbsp;
