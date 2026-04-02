@@ -26,13 +26,13 @@ Formats any Memento date field into a readable string. It handles Greek grammar 
 #### Supported Tokens
 | Token | Description | Example |
 | :--- | :--- | :--- |
-| dddd | Full day name | Wednesday / Τετάρτη |
-| ddd | Short day name | Wed / Τετ |
-| DD | Day of month with leading zero | 01-31 |
-| MMMM | Full month name | April / Απριλίου |
-| MM | Month number | 01-12 |
-| YYYY | 4-digit year | 2026 |
-| YY | 2-digit year | 26 |
+| **dddd** | Full day name | Wednesday / Τετάρτη |
+| **ddd** | Short day name | Wed / Τετ |
+| **DD** | Day of month with leading zero | 01-31 |
+| **MMMM** | Full month name | April / Απριλίου |
+| **MM** | Month number | 01-12 |
+| **YYYY** | 4-digit year | 2026 |
+| **YY** | 2-digit year | 26 |
 
 #### Usage Examples
 ```Javascript
