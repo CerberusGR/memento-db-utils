@@ -1,7 +1,6 @@
 # Memento Database Utilities
 
-A collection of lightweight JavaScript utilities specifically designed for **Memento Database**. This library helps you format dates in Greek and English and display currency values correctly within your Memento fields.
-
+A collection of lightweight JavaScript utilities specifically designed for **Memento Database**. This library helps you format dates in Greek and English, perform date calculations, display currency values, and manage UI elements directly within your library scripts.
 
 &nbsp;
 ## 🚀 Installation
@@ -13,7 +12,8 @@ A collection of lightweight JavaScript utilities specifically designed for **Mem
 
 
 &nbsp;
-## 📅 Date Formatting Tools
+## 📅 Date Utilities
+These functions handle date formatting and calculations with built-in support for Greek grammar (Nominative/Genitive case handling).
 
 ### 1. `formatDate(dateInput, format, locale)`
 Formats any Memento date field into a readable string. It handles Greek grammar rules (Nominative vs. Genitive case) automatically.
@@ -21,7 +21,7 @@ Formats any Memento date field into a readable string. It handles Greek grammar 
 #### Arguments
 | Parameter | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| **`dateInput`**  | `Date/Number` | Required | The date value from a Memento field. |
+| **`dateInput`**  | `Date/Number` | *Required* | The date value from a Memento field. |
 | **`format`**  | `String` | "DD MMMM YYYY"  | The desired output pattern. |
 | **`locale`**  | `String` | "el" | Language code: "el" (Greek) or "en" (English). |
 
@@ -85,7 +85,7 @@ Returns "Τετάρτη" or "Απρίλιος".
 
 
 &nbsp;
-## 💶 Number and Currency Formatting Tools
+## 💶 Currency Utilities
 
 ### 1. `formatEuro(amount, includeSymbol)`
 Formats numeric values into the standard European/Greek currency format (e.g. 1.250,50 €).
@@ -93,8 +93,8 @@ Formats numeric values into the standard European/Greek currency format (e.g. 1.
 #### Arguments
 | Parameter | Type | Default | Description |
 | :--- | :---: | :---: | :--- |
-| **`amount`** | Number/String | *Required* | The numeric value you want to format. |
-| **`includeSymbol`** | Boolean | `true` | If `true`, adds **" €"** at the end. |
+| **`amount`** | `Number/String` | *Required* | The numeric value you want to format. |
+| **`includeSymbol`** | `Boolean` | `true` | If `true`, adds **" €"** at the end. |
 
 #### Examples
 | Input | includeSymbol | Result |
@@ -119,9 +119,48 @@ formatEuro(price, false);
 3. Adds a dot (.) as a thousands separator.
 
 &nbsp;
-## Date Formatting Tools
+## 🎨 UI Utilities
+### 1. `setEntryColor(entry, status, colorCode)`
+Changes the background color of an entry based on a condition.
+
+#### Arguments
+| Parameter | Type | Default | Description |
+| :--- | :---: | :---: | :--- |
+| **`entry`** | `Object` | *Required* | The Memento entry object. |
+| **`status`** | `Boolean` | *Required* | The condition to check (`true`/`false`). |
+| **`colorCode`** |`String` | "#434343" | Optional hex color code. |
+
+#### Usage Examples
+```javascript
+// Set to default dark gray if favorite
+setEntryColor(entry, field("IsFavorite"));
+
+// Set to custom red if status is Urgent
+setEntryColor(entry, field("Status") == "Urgent", "#FF0000");
+```
 
 &nbsp;
-## 🛠 Maintenance
-To add more languages or formatting rules, simply update the languages object in date-utils.js. All changes pushed to GitHub will be available to your Memento libraries upon sync.
+## 🔗 Array Utilities
+### 1. `sortAndJoin(list, separator, reverse)`
+Sorts an array (useful for Multi-choice fields) alphabetically with Greek support and joins it into a single string.
+
+#### Arguments
+| Parameter | Type | Default | Description |
+| :--- | :---: | :---: | :--- |
+| **`list`** | `Array` | *Required* | The array to sort. |
+| **`separator`** | `String` | ", " | The string used to join the elements. |
+| **`reverse`** | `Boolean` | `false` | If `true`, sorts in descending order (Z-A). |
+
+#### Usage Examples
+```javascript
+// Default A-Z: "Apples, Bananas, Cherries"
+sortAndJoin(field("Fruits"));
+
+// Reverse Z-A: "Cherries, Bananas, Apples"
+sortAndJoin(field("Fruits"), ", ", true);
+```
+
+&nbsp;
+## 🛠 Usage Note
+Since these functions are defined globally in your Memento environment, you do not need to use require() or exports. Simply copy the code from `memento-utils.js` into your library's scripts and call the functions directly in any JavaScript field. All changes pushed to GitHub will be available to your Memento libraries upon sync.
 
