@@ -1,6 +1,6 @@
 # Memento Database Utilities
 
-A collection of lightweight JavaScript utilities specifically designed for **Memento Database**. This library features a modern, Day.js-style chainable API for dates, in Greek and English, perform date calculations, display currency values, and manage UI elements directly within your library scripts.
+A collection of lightweight JavaScript utilities specifically designed for Memento Database. This library features a modern, Day.js-style chainable API for dates, along with other helpful tools for currency, UI, arrays, and advanced searching.
 
 &nbsp;
 ## 🚀 Installation
