@@ -148,20 +148,15 @@ function sortAndJoin(list, separator, reverse) {
 
 /**
  * Removes Greek accents from a string.
- * @param {string} str - The input string.
- * @returns {string} - The string without accents.
  */
 function removeAccents(str) {
     if (!str) return "";
     var s = String(str);
-    
-    // A bulletproof map for Memento's JS engine
     var accents = {
         'ά':'α', 'έ':'ε', 'ή':'η', 'ί':'ι', 'ό':'ο', 'ύ':'υ', 'ώ':'ω',
         'Ά':'Α', 'Έ':'Ε', 'Ή':'Η', 'Ί':'Ι', 'Ό':'Ο', 'Ύ':'Υ', 'Ώ':'Ω',
         'ϊ':'ι', 'ϋ':'υ', 'ΐ':'ι', 'ΰ':'υ'
     };
-    
     return s.replace(/[άέήίόύώΆΈΉΊΌΎΏϊϋΐΰ]/g, function(match) {
         return accents[match];
     });
@@ -169,70 +164,60 @@ function removeAccents(str) {
 
 /**
  * Builds a search index string from multiple fields.
- * Handles Memento Java Lists, Entry Objects, and strips accents.
+ * Aggressively parses Memento Java Lists and Entry Objects.
  * Joins them with a newline and removes accents.
- * Accepts any number of arguments (Strings, Numbers, Arrays).
  * @returns {string} - The formatted search index.
  */
 function buildSearchIndex() {
     var values = [];
 
-    // Εσωτερική συνάρτηση που "ξετυλίγει" σωστά τις λίστες και τα αντικείμενα του Memento
+    // Internal helper function to unwrap Memento objects and lists
     function extractText(item) {
         if (item === null || item === undefined || item === "") return "";
-
-        // 1. Έλεγχος αν είναι λίστα/Array (Το Memento συχνά επιστρέφει Java List)
-        var isList = false;
-        var len = 0;
         
-        if (Array.isArray(item)) { 
-            isList = true; len = item.length; 
-        } else if (item && typeof item.size === 'function') { 
-            // Ειδικό για Memento Java ArrayList
-            isList = true; len = item.size(); 
-        } else if (item && typeof item.length === 'number' && typeof item !== 'string') { 
-            isList = true; len = item.length; 
+        // 1. Handle Dates: format as DD/MM/YYYY
+        if (item instanceof Date || (item && typeof item.getTime === 'function')) {
+            var d = ("0" + item.getDate()).slice(-2);
+            var m = ("0" + (item.getMonth() + 1)).slice(-2);
+            var y = item.getFullYear();
+            return d + "/" + m + "/" + y;
+        }
+
+        // 2. Handle Memento Lists or JS Arrays
+        var temp = [];
+        var isList = false;
+
+        if (Array.isArray(item) || (item && item.length !== undefined && typeof item !== 'string')) {
+            for (var i = 0; i < item.length; i++) temp.push(extractText(item[i]));
+            isList = true;
+        } else if (item && item.size && item.get) {
+            // Handle Memento's Java ArrayList (Link to Entry / Multi-choice)
+            var len = (typeof item.size === 'function') ? item.size() : item.size;
+            for (var j = 0; j < len; j++) temp.push(extractText(item.get(j)));
+            isList = true;
         }
 
         if (isList) {
-            var temp = [];
-            for (var j = 0; j < len; j++) {
-                // Η Java List του Memento διαβάζεται με .get(j)
-                var child = (typeof item.get === 'function') ? item.get(j) : item[j];
-                var text = extractText(child);
-                if (text) temp.push(text);
+            var filtered = [];
+            for (var k = 0; k < temp.length; k++) {
+                if (temp[k]) filtered.push(temp[k]); // Ignore empty values
             }
-            return temp.join(", ");
+            return filtered.join(", ");
         }
 
-        // 2. Έλεγχος αν είναι Memento Entry Object (Συνδεδεμένη εγγραφή)
+        // 3. Handle Memento Entry Objects (Linked entries)
         if (typeof item === 'object') {
-            // Αν είναι ημερομηνία, την κάνουμε απλό string
-            if (item instanceof Date || (item.getTime && typeof item.getTime === 'function')) {
-                return item.getDate() + "/" + (item.getMonth() + 1) + "/" + item.getFullYear();
-            }
-            // Τα Entry objects του Memento έχουν ιδιότητα .title ή .name!
-            if (item.title) return String(item.title);
-            if (item.name) return String(item.name);
-
-            // Fallback: Αν είναι κάποιο άλλο περίεργο αντικείμενο, αποτρέπουμε τα άσχημα errors
-            var s = String(item);
-            if (s.indexOf("com.luckydroid") !== -1 || s === "[object Object]") return "";
-            return s;
+            if (item.title) return extractText(item.title);
+            if (item.name) return extractText(item.name);
         }
 
-        // 3. Κανονικό κείμενο ή αριθμός
-        return String(item);
-    }
-
-    // Περνάμε όλα τα arguments στην extractText
-    for (var i = 0; i < arguments.length; i++) {
-        var val = extractText(arguments[i]);
-        if (val) {
-            values.push(removeAccents(val));
+        // 4. Fallback to String and final cleanup
+        var s = String(item);
+        
+        // Remove surrounding brackets if Memento cast it to string (e.g., "[Kwstopoulos]")
+        if (s.charAt(0) === '[' && s.charAt(s.length - 1) === ']') {
+            s = s.substring(1, s.length - 1);
         }
-    }
-
-    // Τα ενώνουμε όλα με νέα γραμμή
-    return values.join("\n");
-}
+        
+        // Ignore unreadable Java classes or objects
+        if (s.indexOf("com.luckydroid") > -1 || s.indexOf("object Object") > -1
