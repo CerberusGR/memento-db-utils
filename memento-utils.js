@@ -220,4 +220,20 @@ function buildSearchIndex() {
         }
         
         // Ignore unreadable Java classes or objects
-        if (s.indexOf("com.luckydroid") > -1 || s.indexOf("object Object") > -1
+        if (s.indexOf("com.luckydroid") > -1 || s.indexOf("object Object") > -1) {
+            return "";
+        }
+        
+        return s.trim();
+    }
+
+    // Process all arguments passed to the function
+    for (var arg = 0; arg < arguments.length; arg++) {
+        var val = extractText(arguments[arg]);
+        if (val) {
+            values.push(removeAccents(val));
+        }
+    }
+    
+    return values.join("\n");
+}
