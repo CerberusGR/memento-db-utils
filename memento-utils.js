@@ -10,7 +10,6 @@ var defaultBackColor = "#434343";
  * * How to call it:
  * formatDate("2026-04-15").locale("el").format("DD MMMM YYYY");
  */
-
 function formatDate(dateInput) {
     // 1. Create an object that will hold our data (the state)
     var instance = {
