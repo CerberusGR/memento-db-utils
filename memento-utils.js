@@ -174,58 +174,44 @@ function buildSearchIndex() {
     function extractText(item) {
         if (item === null || item === undefined || item === "") return "";
         
-        // 1. Ημερομηνία
-        if (item instanceof Date || (item && typeof item.getTime === 'function')) {
+        // 1. Ημερομηνίες
+        if (item instanceof Date || (item && item.getTime)) {
             return ("0" + item.getDate()).slice(-2) + "/" + ("0" + (item.getMonth() + 1)).slice(-2) + "/" + item.getFullYear();
         }
 
-        // 2. Λίστες (Arrays ή Java ArrayLists)
-        var isList = false;
-        var len = 0;
-        if (Array.isArray(item)) { isList = true; len = item.length; }
-        else if (item && item.size && typeof item.size === 'function') { isList = true; len = item.size(); }
+        // 2. Λίστες (Multi-choice / Links)
+        var temp = [];
+        if (Array.isArray(item)) {
+            for (var i = 0; i < item.length; i++) temp.push(extractText(item[i]));
+            return temp.filter(Boolean).join(", ");
+        } 
         
-        if (isList) {
-            var temp = [];
-            for (var i = 0; i < len; i++) {
-                var child = (typeof item.get === 'function') ? item.get(i) : item[i];
-                var t = extractText(child);
-                if (t) temp.push(t);
-            }
-            return temp.join(", ");
+        if (item && item.size && item.get) {
+            var len = (typeof item.size === 'function') ? item.size() : item.size;
+            for (var j = 0; j < len; j++) temp.push(extractText(item.get(j)));
+            return temp.filter(Boolean).join(", ");
         }
 
-        // 3. Memento Entry Object (Εδώ γίνεται η "μαγεία")
+        // 3. Embedded Objects & Entry Links (Το κρίσιμο σημείο)
         if (typeof item === 'object') {
-            // Δοκιμάζουμε όλες τις πιθανές μεθόδους που έχει ένα Entry Object για να δώσει τον τίτλο του
-            var entryTitle = "";
-            if (typeof item.getTitle === 'function') entryTitle = item.getTitle();
-            else if (item.title) entryTitle = item.title;
-            else if (item.name) entryTitle = item.name;
-            else if (typeof item.toString === 'function') {
-                var s = item.toString();
-                if (s.indexOf("object Entry") === -1) entryTitle = s;
-            }
+            // Δοκιμάζουμε όλες τις πιθανές ιδιότητες που χρησιμοποιεί το Memento για κείμενο
+            if (item.description) return extractText(item.description);
+            if (item.title) return extractText(item.title);
+            if (item.name) return extractText(item.name);
             
-            if (entryTitle) return extractText(entryTitle);
+            // Αν είναι embedded, μερικές φορές το String(item) επιστρέφει το κείμενο που βλέπεις στην οθόνη
+            var sObj = String(item);
+            if (sObj !== "[object Object]" && sObj.indexOf("com.luckydroid") === -1 && sObj !== "object Entry") {
+                return sObj;
+            }
         }
 
-        // 4. Καθαρισμός String
-        var finalStr = String(item).trim();
+        // 4. Απλό κείμενο
+        var s = String(item);
+        if (s.charAt(0) === '[' && s.charAt(s.length - 1) === ']') s = s.substring(1, s.length - 1);
+        if (s.indexOf("com.luckydroid") > -1 || s === "[object Object]" || s === "object Entry") return "";
         
-        // Αφαίρεση αγκυλών αν υπάρχουν
-        if (finalStr.indexOf('[') === 0 && finalStr.indexOf(']') === finalStr.length - 1) {
-            finalStr = finalStr.substring(1, finalStr.length - 1);
-        }
-
-        // Φιλτράρισμα σκουπιδιών
-        if (finalStr.indexOf("com.luckydroid") > -1 || 
-            finalStr.indexOf("object Entry") > -1 || 
-            finalStr.indexOf("object Object") > -1) {
-            return "";
-        }
-
-        return finalStr;
+        return s.trim();
     }
 
     for (var arg = 0; arg < arguments.length; arg++) {
