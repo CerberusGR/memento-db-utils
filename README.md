@@ -13,7 +13,7 @@ A collection of lightweight JavaScript utilities specifically designed for **Mem
 
 
 &nbsp;
-## 📅 Date Formatting (date-utils.js)
+## 📅 Date Formatting Tools
 
 ### 1. `formatDate(dateInput, format, locale)`
 Formats any Memento date field into a readable string. It handles Greek grammar rules (Nominative vs. Genitive case) automatically.
@@ -85,7 +85,7 @@ Returns "Τετάρτη" or "Απρίλιος".
 
 
 &nbsp;
-## 💶 Number and Currency Formatting (number-utils.js)
+## 💶 Number and Currency Formatting Tools
 
 ### 1. `formatEuro(amount, includeSymbol)`
 Formats numeric values into the standard European/Greek currency format (e.g. 1.250,50 €).
@@ -117,6 +117,9 @@ formatEuro(price, false);
 1. Forces 2 decimal places.
 2. Replaces decimal dot (.) with comma (,).
 3. Adds a dot (.) as a thousands separator.
+
+&nbsp;
+## Date Formatting Tools
 
 &nbsp;
 ## 🛠 Maintenance
