@@ -225,58 +225,7 @@ function buildSearchIndex2() {
 
 
 //=============================================================
-
-/**
- * Extracts a readable string from any Memento value type.
- * Handles Java Lists, Entry objects, arrays, numbers and plain text.
- * @param {*} val - The value to extract a string from.
- * @returns {string[]} - Array of extracted strings.
- */
-function extractValues(val) {
-  var result = [];
-
-  if (val === null || val === undefined || val === '') return result;
-
-  // Handle JavaScript arrays and Memento Java Lists
-  if (Array.isArray(val) || (typeof val === 'object' && typeof val.size === 'function')) {
-    var size = Array.isArray(val) ? val.length : val.size();
-    for (var j = 0; j < size; j++) {
-      var item = Array.isArray(val) ? val[j] : val.get(j);
-      var sub = extractValues(item); // Recursive για nested objects
-      for (var k = 0; k < sub.length; k++) result.push(sub[k]);
-    }
-  }
-  // Handle Entry objects (linked library entries) - [object Entry]
-  else if (typeof val === 'object' && typeof val.title === 'function') {
-    var t = val.title();
-    if (t) result.push(t.toString().trim());
-  }
-  // Handle Entry objects with name() instead of title()
-  else if (typeof val === 'object' && typeof val.name === 'function') {
-    var n = val.name();
-    if (n) result.push(n.toString().trim());
-  }
-  // Handle generic objects - try to find any useful string method
-  else if (typeof val === 'object') {
-    var s = val.toString();
-    // Skip useless toString results
-    if (s && s.indexOf('[object') === -1) {
-      result.push(s.trim());
-    }
-  }
-  // Handle numbers and currency
-  else if (typeof val === 'number') {
-    result.push(val.toString());
-  }
-  // Handle plain text
-  else {
-    result.push(val.toString().trim());
-  }
-
-  return result;
-}
-
-var UTILS_VERSION = '1.0.3';
+var UTILS_VERSION = '1.0.4';
 
 /**
  * Returns the current version of the utils library.
@@ -305,27 +254,102 @@ function removeAccents(str) {
 }
 
 /**
+ * Extracts a readable string from a single Memento list/array item.
+ * Handles: plain values, multiselect objects (via key), linked Entry objects (via fieldName).
+ * @param {*} item - The list item to extract.
+ * @param {string|null} key - Property key for multiselect objects (e.g. 'Κατάσταση').
+ * @param {string|null} entryField - Field name for linked Entry objects (e.g. 'Name').
+ * @returns {string} - Extracted string or empty string if not resolvable.
+ */
+function extractItem(item, key, entryField) {
+  if (item === null || item === undefined) return '';
+
+  // Plain string or number
+  if (typeof item !== 'object') return item.toString().trim();
+
+  // Multiselect object: access via key (e.g. item['Κατάσταση'])
+  if (key && item[key] !== undefined && item[key] !== null) {
+    return item[key].toString().trim();
+  }
+
+  // Linked Entry object: access via field()
+  if (entryField && typeof item.field === 'function') {
+    var val = item.field(entryField);
+    if (val !== null && val !== undefined) return val.toString().trim();
+  }
+
+  return '';
+}
+
+/**
  * Builds a search index string from multiple fields.
- * Aggressively parses Memento Java Lists and Entry Objects.
+ * Aggressively parses Memento Java Lists, multiselect objects and Entry objects.
  * Joins all values with newlines and removes accents.
- * Supports text, number, currency, array and list field types.
- * Accepts any number of field name arguments.
- * @param {...string} arguments - Any number of field names.
+ * Supports text, number, currency, array, list, multiselect and linked entry field types.
+ *
+ * Each argument can be:
+ *   - A string: field name (plain text, number, currency)
+ *   - An object: { field, key } for multiselect lists
+ *   - An object: { field, entryField } for linked entry lists
+ *
+ * @param {...string|Object} arguments - Field descriptors.
  * @returns {string} - The formatted search index string, prepended with version.
+ *
+ * @example
+ * buildSearchIndex(
+ *   'Name',
+ *   'Amount',
+ *   { field: 'Κατάσταση', key: 'Κατάσταση' },
+ *   { field: 'Εργασίες', entryField: 'Title' }
+ * )
  */
 function buildSearchIndex() {
   var lines = [];
+  var args = Array.prototype.slice.call(arguments);
 
-  // Accept any number of arguments as field names
-  var fieldNames = Array.prototype.slice.call(arguments);
+  for (var i = 0; i < args.length; i++) {
+    var arg = args[i];
+    var fieldName, key, entryField;
 
-  for (var i = 0; i < fieldNames.length; i++) {
-    var val = field(fieldNames[i]);
-    var extracted = extractValues(val);
+    // Resolve argument type
+    if (typeof arg === 'string') {
+      fieldName   = arg;
+      key         = null;
+      entryField  = null;
+    } else if (typeof arg === 'object' && arg.field) {
+      fieldName   = arg.field;
+      key         = arg.key        || null;
+      entryField  = arg.entryField || null;
+    } else {
+      continue;
+    }
 
-    for (var j = 0; j < extracted.length; j++) {
-      var cleaned = removeAccents(extracted[j]);
-      if (cleaned) lines.push(cleaned);
+    var val = field(fieldName);
+    if (val === null || val === undefined || val === '') continue;
+
+    // Handle Memento Java Lists (has size() and get())
+    if (typeof val === 'object' && typeof val.size === 'function') {
+      var size = val.size();
+      for (var j = 0; j < size; j++) {
+        var item    = val.get(j);
+        var cleaned = removeAccents(extractItem(item, key, entryField));
+        if (cleaned) lines.push(cleaned);
+      }
+    }
+    // Handle plain JavaScript arrays
+    else if (Array.isArray(val)) {
+      for (var j = 0; j < val.length; j++) {
+        var cleaned = removeAccents(extractItem(val[j], key, entryField));
+        if (cleaned) lines.push(cleaned);
+      }
+    }
+    // Handle numbers and currency (skip accent removal)
+    else if (typeof val === 'number') {
+      lines.push(val.toString());
+    }
+    // Handle plain text
+    else {
+      lines.push(removeAccents(val.toString().trim()));
     }
   }
 
@@ -333,35 +357,4 @@ function buildSearchIndex() {
   lines.unshift(getVersion());
 
   return lines.join('\n');
-}
-
-
-function debugField(fieldName) {
-  var val = field(fieldName);
-  var info = [];
-  
-  info.push('field: ' + fieldName);
-
-  if (typeof val === 'object' && val !== null && typeof val.size === 'function' && val.size() > 0) {
-    var first = val.get(0);
-    info.push('first typeof: ' + typeof first);
-    info.push('first toString: ' + first);
-    
-    // Δοκίμασε όλα τα πιθανά methods
-    var methods = ['title', 'name', 'label', 'value', 'getValue', 
-                   'getText', 'toString', 'get', 'field', 'fields',
-                   'displayString', 'str', 'key'];
-    for (var m = 0; m < methods.length; m++) {
-      try {
-        info.push('has ' + methods[m] + '(): ' + (typeof first[methods[m]] === 'function'));
-        if (typeof first[methods[m]] === 'function') {
-          info.push(methods[m] + '() = ' + first[methods[m]]());
-        }
-      } catch(e) {
-        info.push(methods[m] + '() error: ' + e);
-      }
-    }
-  }
-  
-  return info.join('\n');
 }
