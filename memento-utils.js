@@ -226,7 +226,57 @@ function buildSearchIndex2() {
 
 //=============================================================
 
-var UTILS_VERSION = '1.0.2';
+/**
+ * Extracts a readable string from any Memento value type.
+ * Handles Java Lists, Entry objects, arrays, numbers and plain text.
+ * @param {*} val - The value to extract a string from.
+ * @returns {string[]} - Array of extracted strings.
+ */
+function extractValues(val) {
+  var result = [];
+
+  if (val === null || val === undefined || val === '') return result;
+
+  // Handle JavaScript arrays and Memento Java Lists
+  if (Array.isArray(val) || (typeof val === 'object' && typeof val.size === 'function')) {
+    var size = Array.isArray(val) ? val.length : val.size();
+    for (var j = 0; j < size; j++) {
+      var item = Array.isArray(val) ? val[j] : val.get(j);
+      var sub = extractValues(item); // Recursive για nested objects
+      for (var k = 0; k < sub.length; k++) result.push(sub[k]);
+    }
+  }
+  // Handle Entry objects (linked library entries) - [object Entry]
+  else if (typeof val === 'object' && typeof val.title === 'function') {
+    var t = val.title();
+    if (t) result.push(t.toString().trim());
+  }
+  // Handle Entry objects with name() instead of title()
+  else if (typeof val === 'object' && typeof val.name === 'function') {
+    var n = val.name();
+    if (n) result.push(n.toString().trim());
+  }
+  // Handle generic objects - try to find any useful string method
+  else if (typeof val === 'object') {
+    var s = val.toString();
+    // Skip useless toString results
+    if (s && s.indexOf('[object') === -1) {
+      result.push(s.trim());
+    }
+  }
+  // Handle numbers and currency
+  else if (typeof val === 'number') {
+    result.push(val.toString());
+  }
+  // Handle plain text
+  else {
+    result.push(val.toString().trim());
+  }
+
+  return result;
+}
+
+var UTILS_VERSION = '1.0.3';
 
 /**
  * Returns the current version of the utils library.
@@ -271,32 +321,11 @@ function buildSearchIndex() {
 
   for (var i = 0; i < fieldNames.length; i++) {
     var val = field(fieldNames[i]);
+    var extracted = extractValues(val);
 
-    if (val === null || val === undefined || val === '') continue;
-
-    // Handle JavaScript arrays and Memento Java Lists
-    if (Array.isArray(val) || (typeof val === 'object' && typeof val.size === 'function')) {
-      var size = Array.isArray(val) ? val.length : val.size();
-      for (var j = 0; j < size; j++) {
-        var item = Array.isArray(val) ? val[j] : val.get(j);
-
-        // Handle Entry objects (linked library entries)
-        if (item && typeof item === 'object' && typeof item.title === 'function') {
-          var cleaned = removeAccents(item.title().toString().trim());
-          if (cleaned) lines.push(cleaned);
-        } else if (item !== null && item !== undefined) {
-          var cleaned = removeAccents(item.toString().trim());
-          if (cleaned) lines.push(cleaned);
-        }
-      }
-    }
-    // Handle numbers and currency (skip accent removal)
-    else if (typeof val === 'number') {
-      lines.push(val.toString());
-    }
-    // Handle plain text
-    else {
-      lines.push(removeAccents(val.toString().trim()));
+    for (var j = 0; j < extracted.length; j++) {
+      var cleaned = removeAccents(extracted[j]);
+      if (cleaned) lines.push(cleaned);
     }
   }
 
