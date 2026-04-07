@@ -149,7 +149,7 @@ function sortAndJoin(list, separator, reverse) {
 /**
  * Removes Greek accents from a string.
  */
-function removeAccents(str) {
+function removeAccents2(str) {
     if (!str) return "";
     var s = String(str);
     var accents = {
@@ -168,7 +168,7 @@ function removeAccents(str) {
  * Joins them with a newline and removes accents.
  * @returns {string} - The formatted search index.
  */
-function buildSearchIndex() {
+function buildSearchIndex2() {
     var values = [];
 
     function extractText(item) {
@@ -220,3 +220,70 @@ function buildSearchIndex() {
     }
     return values.join("\n");
 }
+
+
+
+
+/**
+ * Removes Greek accent characters from a string.
+ * Converts accented Greek vowels to their unaccented equivalents.
+ * @param {string} str - The input string.
+ * @returns {string} - The string without accents.
+ */
+function removeAccents(str) {
+  if (!str) return '';
+  var accents = {
+    'ά':'α','έ':'ε','ή':'η','ί':'ι','ό':'ο','ύ':'υ','ώ':'ω',
+    'Ά':'Α','Έ':'Ε','Ή':'Η','Ί':'Ι','Ό':'Ο','Ύ':'Υ','Ώ':'Ω',
+    'ϊ':'ι','ϋ':'υ','ΐ':'ι','ΰ':'υ'
+  };
+  return str.toString().replace(/[άέήίόύώΆΈΉΊΌΎΏϊϋΐΰ]/g, function(c) {
+    return accents[c] || c;
+  });
+}
+
+/**
+ * Builds a search index string from multiple fields.
+ * Aggressively parses Memento Java Lists and Entry Objects.
+ * Joins all values with newlines and removes accents.
+ * Supports text, number, currency, array and list field types.
+ * @param {string[]} fieldNames - Array of field names to include in the index.
+ * @returns {string} - The formatted search index string.
+ */
+function buildSearchIndex(fieldNames) {
+  var lines = [];
+
+  for (var i = 0; i < fieldNames.length; i++) {
+    var val = field(fieldNames[i]);
+
+    if (val === null || val === undefined || val === '') continue;
+
+    // Handle JavaScript arrays and Memento Java Lists
+    if (Array.isArray(val) || (typeof val === 'object' && typeof val.size === 'function')) {
+      var size = Array.isArray(val) ? val.length : val.size();
+      for (var j = 0; j < size; j++) {
+        var item = Array.isArray(val) ? val[j] : val.get(j);
+
+        // Handle Entry objects (linked library entries)
+        if (item && typeof item === 'object' && typeof item.title === 'function') {
+          var cleaned = removeAccents(item.title().toString().trim());
+          if (cleaned) lines.push(cleaned);
+        } else if (item !== null && item !== undefined) {
+          var cleaned = removeAccents(item.toString().trim());
+          if (cleaned) lines.push(cleaned);
+        }
+      }
+    }
+    // Handle numbers and currency (skip accent removal)
+    else if (typeof val === 'number') {
+      lines.push(val.toString());
+    }
+    // Handle plain text
+    else {
+      lines.push(removeAccents(val.toString().trim()));
+    }
+  }
+
+  return lines.join('\n');
+}
+
