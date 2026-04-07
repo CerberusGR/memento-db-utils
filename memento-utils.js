@@ -224,6 +224,18 @@ function buildSearchIndex2() {
 
 
 
+//=============================================================
+
+var UTILS_VERSION = '1.0.1';
+
+/**
+ * Returns the current version of the utils library.
+ * @returns {string} - The version string.
+ */
+function getVersion() {
+  return 'utils v' + UTILS_VERSION;
+}
+
 /**
  * Removes Greek accent characters from a string.
  * Converts accented Greek vowels to their unaccented equivalents.
@@ -289,6 +301,9 @@ function buildSearchIndex(fieldNames) {
       lines.push(removeAccents(val.toString().trim()));
     }
   }
+
+  // Prepend version header to output
+  lines.unshift(getVersion());
 
   return lines.join('\n');
 }
