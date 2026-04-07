@@ -226,7 +226,7 @@ function buildSearchIndex2() {
 
 //=============================================================
 
-var UTILS_VERSION = '1.0.1';
+var UTILS_VERSION = '1.0.2';
 
 /**
  * Returns the current version of the utils library.
@@ -259,17 +259,15 @@ function removeAccents(str) {
  * Aggressively parses Memento Java Lists and Entry Objects.
  * Joins all values with newlines and removes accents.
  * Supports text, number, currency, array and list field types.
- * Accepts either a single field name (string) or multiple field names (array).
- * @param {string|string[]} fieldNames - Single field name or array of field names.
- * @returns {string} - The formatted search index string.
+ * Accepts any number of field name arguments.
+ * @param {...string} arguments - Any number of field names.
+ * @returns {string} - The formatted search index string, prepended with version.
  */
-function buildSearchIndex(fieldNames) {
+function buildSearchIndex() {
   var lines = [];
 
-  // Normalize input: accept both string and array
-  if (typeof fieldNames === 'string') {
-    fieldNames = [fieldNames];
-  }
+  // Accept any number of arguments as field names
+  var fieldNames = Array.prototype.slice.call(arguments);
 
   for (var i = 0; i < fieldNames.length; i++) {
     var val = field(fieldNames[i]);
@@ -306,22 +304,4 @@ function buildSearchIndex(fieldNames) {
   lines.unshift(getVersion());
 
   return lines.join('\n');
-}
-
-
-function buildSearchIndex3(fieldNames) {
-  var lines = [];
-  var debug = [];
-
-  if (typeof fieldNames === 'string') {
-    fieldNames = [fieldNames];
-  }
-
-  for (var i = 0; i < fieldNames.length; i++) {
-    var val = field(fieldNames[i]);
-    // Log τι επιστρέφει κάθε field
-    debug.push(fieldNames[i] + ': [' + typeof val + '] ' + val);
-  }
-
-  return debug.join('\n');
 }
