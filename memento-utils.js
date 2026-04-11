@@ -134,7 +134,7 @@ function setEntryColor(e, status, colorCode) {
 // ==========================================
 
 function sortAndJoin(list, separator, reverse) {
-    if (!list || !Array.isArray(list)) return "";
+    if (!list || !Array.isArray(list)) return "test";
     separator = separator || ", ";
     var sorted = list.sort(function(a, b) {
         return reverse ? b.localeCompare(a, 'el') : a.localeCompare(b, 'el');
