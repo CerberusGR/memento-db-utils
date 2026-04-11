@@ -134,13 +134,38 @@ function setEntryColor(e, status, colorCode) {
 // ==========================================
 
 function sortAndJoin(list, separator, reverse) {
-    if (!list || !Array.isArray(list)) return "test";
+    // Handle empty or null inputs
+    if (!list) return "";
+    
+    // Set default separator if not provided
     separator = separator || ", ";
-    var sorted = list.sort(function(a, b) {
+    
+    var jsArray = [];
+
+    // Check if Memento returned a single comma-separated string
+    if (typeof list === 'string') {
+        jsArray = list.split(',');
+    } else if (list.length !== undefined) {
+        // Handle Memento array-like objects by pushing elements to a native JS array
+        for (var i = 0; i < list.length; i++) {
+            jsArray.push(list[i]);
+        }
+    } else {
+        // If it's neither a string nor an array-like object, return the fallback
+        return "";
+    }
+
+    // Clean up whitespace and sort the native JS array
+    var sorted = jsArray.map(function(item) {
+        return String(item).trim();
+    }).sort(function(a, b) {
         return reverse ? b.localeCompare(a, 'el') : a.localeCompare(b, 'el');
     });
+
+    // Return the joined string
     return sorted.join(separator);
 }
+
 
 // ==========================================
 // SEARCH & STRING UTILITIES
