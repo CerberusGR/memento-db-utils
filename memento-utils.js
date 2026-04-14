@@ -167,6 +167,37 @@ function sortAndJoin(list, separator, reverse) {
 }
 
 
+// Universal function to safely read data from ANY linked field
+function getLinkedField(linkName, index, targetName) {
+    // Get the array of linked entries, fallback to an empty array
+    var linkedEntries = field(linkName) || [];
+    
+    // Check if the requested index exists and grab the entry
+    var targetEntry = linkedEntries.length > index ? linkedEntries[index] : null;
+    
+    // Return the specific field value, or null if the entry is missing
+    return targetEntry ? targetEntry.field(targetName) : null;
+}
+
+// ---------------------------------------------------------
+// HOW TO USE IT (ΠΑΡΑΔΕΙΓΜΑΤΑ):
+// ---------------------------------------------------------
+
+// 1. Get the company name from the 1st job (Index 0)
+var companyName = getLinkedField("Θέση Εργασίας", 0, "Επωνυμία / Επώνυμο");
+
+// 2. Get the city from the 2nd address (Index 1) - if it exists!
+var secondCity = getLinkedField("Διευθύνσεις", 1, "Πόλη");
+
+// 3. Get the phone number from the 1st linked contact
+var firstPhone = getLinkedField("Επαφές", 0, "Τηλέφωνο");
+
+// Return whatever you need for this specific script
+companyName;
+
+
+
+
 // ==========================================
 // SEARCH & STRING UTILITIES
 // ==========================================
