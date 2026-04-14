@@ -3,6 +3,39 @@
  * A collection of helper functions for formatting, UI logic, and array manipulation.
  */
 
+
+// Function to clear or empty multiple fields
+function clearFields(fieldNames) {
+    // Ensure the input is a valid array
+    if (!fieldNames || fieldNames.length === undefined) {
+        return; // Exit if no valid array is provided
+    }
+
+    // Loop through each field name in the array
+    for (var i = 0; i < fieldNames.length; i++) {
+        var currentField = fieldNames[i];
+        
+        // Set the field's value to null (which empties it completely)
+        entry().set(currentField, null);
+        
+        // NOTE: If you literally want the number 0 instead of an empty field, 
+        // change the line above to: entry().set(currentField, 0);
+    }
+}
+
+// ---------------------------------------------------------
+// HOW TO USE IT (ΠΑΡΑΔΕΙΓΜΑ):
+// ---------------------------------------------------------
+
+// 1. Create an array with the exact names of the fields you want to clear
+//var fieldsToReset = ["Ποσό Εξόδου", "Προτεινόμενη Κατηγορία", "Σχόλιο"];
+
+// 2. Call the function
+//clearFields(fieldsToReset);
+
+
+
+
 var defaultBackColor = "#434343";
 
 // ==========================================
