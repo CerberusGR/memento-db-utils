@@ -9,7 +9,7 @@
 function checkDuplicate(thisEntry, fieldName) {
     // Get the value the user just typed
     var currentValue = thisEntry.field(fieldName);
-    message(currentValue)
+
     // If the field is empty, there's nothing to check
     if (!currentValue) {
 message('empty ')
