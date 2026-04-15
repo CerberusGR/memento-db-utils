@@ -24,7 +24,8 @@ Formats any Memento date field using a modern, chainable approach. It includes b
 | **`dateInput`**  | `Date/Number` | *Required* | The date value from a Memento field. |
 
 #### Chainable Methods
-**`.locale(lang)`**: Sets the language ("el" for Greek, "en" for English). Defaults to "el".&nbsp;
+**`.locale(lang)`**: Sets the language ("el" for Greek, "en" for English). Defaults to "el".
+
 **`.format(pattern)`**: Calculates and returns the formatted string. Default pattern is "DD MMMM YYYY".
 
 #### Supported Tokens
