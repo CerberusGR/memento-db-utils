@@ -82,6 +82,8 @@ diffInDays(field("StartDate"), field("EndDate"));
 
 ### 4. `getAge(birthDate)`
 Calculates current age in years.
+
+#### Usage Example:
 ```javascript
 var userAge = getAge(field("Birthday"));
 ```
